@@ -73,19 +73,16 @@ class MyNum:
             if isinstance(self.value, inf) and isinstance(other.value, inf):
                 return nan()
             elif isinstance(self.value, inf):
-                # inf / 0 -> nan (Updated based on request)
                 if other.value == 0:
                     return nan()
                 return inf(self.value.sign ^ (other.value < 0))
             else:
-                # finite / inf -> 0
                 return 0.0
         else:
             if other.value == 0:
                 if self.value == 0:
                     return nan()
                 else:
-                    # finite / 0 -> inf
                     return inf(self.value < 0)
             else:
                 return self.value / other.value
@@ -95,9 +92,9 @@ class MyNum:
             return nan()
         elif isinstance(self.value, inf):
             if isinstance(other.value, inf):
-                if other.value.sign == False:  # +inf
+                if other.value.sign == False: 
                     return self.value
-                else:  # -inf
+                else: 
                     return 0.0
             elif other.value > 0:
                 return self.value
@@ -106,14 +103,14 @@ class MyNum:
             else:
                 return 0.0
         elif isinstance(other.value, inf):
-            if other.value.sign == False:  # ^ +inf
+            if other.value.sign == False:  
                 if abs(self.value) > 1:
                     return inf(False)
                 elif abs(self.value) < 1:
                     return 0.0
                 else:
-                    return nan()  # 1^inf
-            else:  # ^ -inf
+                    return nan()  
+            else:  
                 if abs(self.value) > 1:
                     return 0.0
                 elif abs(self.value) < 1:
@@ -153,7 +150,6 @@ def tokenize(expression):
     pattern = re.compile(r'\d+\.\d+|\d+|inf|nan|[()+\-*/^]')
     tokens = pattern.findall(clean_expression)
 
-    # Check for invalid characters
     reconstructed = "".join(tokens)
     if len(reconstructed) != len(clean_expression):
         raise ValueError("Invalid characters")
