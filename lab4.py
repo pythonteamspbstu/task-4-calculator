@@ -1,12 +1,15 @@
 import re
 
+
 class inf:
     def __init__(self, sign):
         self.sign = sign
 
+
 class nan:
     def __init__(self):
         pass
+
 
 class MyNum:
     def __init__(self, value):
@@ -69,8 +72,6 @@ class MyNum:
             if isinstance(self.value, inf) and isinstance(other.value, inf):
                 return nan()
             elif isinstance(self.value, inf):
-
-
                 if other.value == 0:
                     return self.value
                 return inf(self.value.sign ^ (other.value < 0))
@@ -132,6 +133,7 @@ class MyNum:
         else:
             return 0 - self.value
 
+
 PRECEDENCE = {
     '+': 1,
     '-': 1,
@@ -140,6 +142,7 @@ PRECEDENCE = {
     '^': 3,
     'u-': 4
 }
+
 
 def tokenize(expression):
     clean_expression = expression.lower().replace(" ", "")
@@ -151,6 +154,7 @@ def tokenize(expression):
         raise ValueError("Invalid characters")
 
     return tokens
+
 
 def to_rpn(tokens):
     output = []
@@ -188,6 +192,7 @@ def to_rpn(tokens):
 
     return output
 
+
 def evaluate_rpn(rpn_queue):
     stack = []
     for token in rpn_queue:
@@ -199,12 +204,14 @@ def evaluate_rpn(rpn_queue):
             stack.append(MyNum(nan()))
         elif token in PRECEDENCE:
             if token == 'u-':
-                if not stack: return MyNum(nan())
+                if not stack:
+                    raise ValueError
                 a = stack.pop()
                 res = -a
                 stack.append(MyNum(res.value if isinstance(res, MyNum) else res))
             else:
-                if len(stack) < 2: return MyNum(nan())
+                if len(stack) < 2:
+                    raise ValueError
                 b = stack.pop()
                 a = stack.pop()
                 res = None
@@ -222,16 +229,18 @@ def evaluate_rpn(rpn_queue):
                 val_to_store = res.value if isinstance(res, MyNum) else res
                 stack.append(MyNum(val_to_store))
 
-    return stack[0] if stack else MyNum(nan())
+    if len(stack) != 1:
+        raise ValueError
+
+    return stack[0]
+
 
 def calculate(expression):
-    try:
-        tokens = tokenize(expression)
-        rpn = to_rpn(tokens)
-        result = evaluate_rpn(rpn)
-        return result
-    except Exception:
-        return MyNum(nan())
+    tokens = tokenize(expression)
+    rpn = to_rpn(tokens)
+    result = evaluate_rpn(rpn)
+    return result
+
 
 def format_result(my_num_obj):
     val = my_num_obj.value
@@ -243,6 +252,7 @@ def format_result(my_num_obj):
         if val == int(val):
             return str(int(val))
         return str(val)
+
 
 def main():
     print("Калькулятор запущен. Введите выражение (или 'exit' для выхода).")
@@ -279,6 +289,9 @@ def main():
             print(f"Результат: {format_result(result_obj)}")
         except ValueError:
             print("Ошибка: Введено недопустимое выражение.")
+        except Exception:
+            print("Ошибка: Введено недопустимое выражение.")
+
 
 if __name__ == "__main__":
     main()
