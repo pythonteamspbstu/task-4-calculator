@@ -79,10 +79,7 @@ class MyNum:
                 return 0.0
         else:
             if other.value == 0:
-                if self.value == 0:
-                    return nan()
-                else:
-                    return inf(self.value < 0)
+                return nan()
             else:
                 return self.value / other.value
 
@@ -118,7 +115,7 @@ class MyNum:
                     return nan()
         else:
             if self.value == 0 and other.value < 0:
-                return inf(True)
+                return nan()
             else:
                 try:
                     return self.value ** other.value
